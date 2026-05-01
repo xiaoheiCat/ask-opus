@@ -1,0 +1,6 @@
+{
+  "provider": "openai",
+  "base_url": "https://api.openai.com",
+  "model": "gpt-5.4",
+  "api_key": "sk-..."
+}
