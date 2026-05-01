@@ -6,7 +6,7 @@
 
 ```bash
 # 克隆仓库
-git clone <repo-url>
+git clone https://github.com/xiaoheiCat/ask-opus
 cd ask-opus
 
 # 复制并编辑配置文件
