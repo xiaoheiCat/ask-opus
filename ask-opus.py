@@ -128,7 +128,7 @@ def call_anthropic(cfg, messages):
 
 
 def call_openai(cfg, messages):
-    url = cfg["base_url"] + "/chat/completion"
+    url = cfg["base_url"] + "/chat/completions"
 
     headers = {
         "Content-Type": "application/json",
@@ -295,8 +295,13 @@ def handle(req):
     m = req.get("method")
     p = req.get("params") or {}
 
+    # 通知（notification）没有 id，不返回响应
+    is_notification = "id" not in req
+
     try:
         if m == "initialize":
+            if is_notification:
+                return None
             return ok(i, {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}},
@@ -304,9 +309,13 @@ def handle(req):
             })
 
         if m == "tools/list":
+            if is_notification:
+                return None
             return ok(i, {"tools": TOOLS})
 
         if m == "tools/call":
+            if is_notification:
+                return None
             name = p.get("name")
             args = p.get("arguments") or {}
 
@@ -326,9 +335,14 @@ def handle(req):
                 }]
             })
 
+        # 未知方法：通知不响应，请求返回错误
+        if is_notification:
+            return None
         return err(i, "未知方法")
 
     except Exception as e:
+        if is_notification:
+            return None
         return err(i, str(e))
 
 
@@ -341,10 +355,11 @@ def main():
         try:
             req = json.loads(line)
             res = handle(req)
-        except Exception as e:
-            res = err(None, str(e))
-
-        print(json.dumps(res, ensure_ascii=False), flush=True)
+            if res is not None:
+                print(json.dumps(res, ensure_ascii=False), flush=True)
+        except Exception:
+            # 解析失败或处理异常：无法确定是否是通知，静默忽略
+            pass
 
 
 if __name__ == "__main__":
