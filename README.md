@@ -1,6 +1,6 @@
 # Ask Opus
 
-另一个基于 MCP 的 Claude Code Advisor。通过让轻量级大模型像更聪明的大模型提问，从而节省后者的账单。
+另一个基于 MCP 的 Claude Code Advisor。通过让轻量级大模型向更聪明的大模型提问，从而节省后者的账单。
 
 ## 安装
 
